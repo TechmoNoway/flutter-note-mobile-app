@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "186437388808",
+    "project_id": "note-flutter-app-edb72",
+    "storage_bucket": "note-flutter-app-edb72.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:186437388808:android:d6e90e23e59c052d3bdfbd",
+        "android_client_info": {
+          "package_name": "com.meow.note_flutter"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCNuM-OOgCP_yVutaaROWpY1eFe-wVgZho"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
