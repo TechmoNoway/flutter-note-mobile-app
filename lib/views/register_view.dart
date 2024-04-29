@@ -61,17 +61,26 @@ class _RegisterViewState extends State<RegisterView> {
                     autocorrect: false,
                   ),
                   TextButton(
-                      onPressed: () async {
-                        final email = _email.text;
-                        final password = _password.text;
-                        final UserCredential = await FirebaseAuth.instance
-                            .createUserWithEmailAndPassword(
-                          email: email,
-                          password: password,
+                    onPressed: () async {
+                      final email = _email.text;
+                      final password = _password.text;
+                      final UserCredential = await FirebaseAuth.instance
+                          .createUserWithEmailAndPassword(
+                        email: email,
+                        password: password,
+                      );
+                      print(UserCredential);
+                    },
+                    child: const Text('Register'),
+                  ),
+                  TextButton(
+                      onPressed: () {
+                        Navigator.of(context).pushNamedAndRemoveUntil(
+                          '/login/',
+                          (route) => false,
                         );
-                        print(UserCredential);
                       },
-                      child: const Text('Register'))
+                      child: const Text("Already registered? Login here!"))
                 ],
               );
             default:
