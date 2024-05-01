@@ -1,7 +1,8 @@
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-import 'package:note_flutter/firebase_options.dart';
+import 'package:note_flutter/constants/routes.dart';
+import 'package:note_flutter/services/auth/auth_exceptions.dart';
+import 'package:note_flutter/services/auth/auth_service.dart';
+import 'package:note_flutter/utils/show_error_dialog.dart';
 
 class LoginView extends StatefulWidget {
   const LoginView({super.key});
@@ -35,9 +36,7 @@ class _LoginViewState extends State<LoginView> {
         title: const Text('Login'),
       ),
       body: FutureBuilder(
-        future: Firebase.initializeApp(
-          options: DefaultFirebaseOptions.currentPlatform,
-        ),
+        future: AuthService.firebase().initialize(),
         builder: (context, snapshot) {
           switch (snapshot.connectionState) {
             case ConnectionState.done:
@@ -45,8 +44,6 @@ class _LoginViewState extends State<LoginView> {
                 children: [
                   TextField(
                     controller: _email,
-                    // enableSuggestions: false,
-                    // autocorrect: false,
                     keyboardType: TextInputType.emailAddress,
                     decoration: const InputDecoration(
                         hintText: 'Enter your email here'),
@@ -65,20 +62,41 @@ class _LoginViewState extends State<LoginView> {
                       final email = _email.text;
                       final password = _password.text;
                       try {
-                        final UserCredential = await FirebaseAuth.instance
-                            .signInWithEmailAndPassword(
+                        await AuthService.firebase().logIn(
                           email: email,
                           password: password,
                         );
-                        print(UserCredential);
-                      } on FirebaseAuthException catch (e) {
-                        if (e.code == 'user-not-found') {
-                          print("User not found");
-                        } else if (e.code == 'wrong-password') {
-                          print("Wrong password");
+                        final user = AuthService.firebase().currentUser;
+                        if (user?.isEmailVerified ?? false) {
+                          Navigator.of(context).pushNamedAndRemoveUntil(
+                            notesRoute,
+                            (route) => false,
+                          );
+                        } else {
+                          Navigator.of(context).pushNamedAndRemoveUntil(
+                            verifyEmailRoute,
+                            (route) => false,
+                          );
                         }
-                      } catch (e) {
-                        print("Something went wrong!");
+                        Navigator.of(context).pushNamedAndRemoveUntil(
+                          notesRoute,
+                          (route) => false,
+                        );
+                      } on UserNotFoundAuthException {
+                        await showErrorDialog(
+                          context,
+                          "User not found",
+                        );
+                      } on WrongPasswordAuthException {
+                        await showErrorDialog(
+                          context,
+                          "Wrong password",
+                        );
+                      } on GenericAuthException {
+                        await showErrorDialog(
+                          context,
+                          "Authentication error",
+                        );
                       }
                     },
                     child: const Text('Login'),
@@ -86,7 +104,7 @@ class _LoginViewState extends State<LoginView> {
                   TextButton(
                     onPressed: () {
                       Navigator.of(context).pushNamedAndRemoveUntil(
-                        '/register/',
+                        registerRoute,
                         (route) => false,
                       );
                     },
