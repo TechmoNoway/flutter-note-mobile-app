@@ -2,7 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:note_flutter/constants/routes.dart';
 import 'package:note_flutter/services/auth/auth_service.dart';
 import 'package:note_flutter/views/login_view.dart';
-import 'package:note_flutter/views/notes_view.dart';
+import 'package:note_flutter/views/notes/new_note_view.dart';
+import 'package:note_flutter/views/notes/notes_view.dart';
 import 'package:note_flutter/views/register_view.dart';
 import 'package:note_flutter/views/verify_email_view.dart';
 
@@ -25,6 +26,7 @@ class MyApp extends StatelessWidget {
         registerRoute: (context) => const RegisterView(),
         notesRoute: (context) => const NotesView(),
         verifyEmailRoute: (context) => const VerifyEmailView(),
+        newNoteRoute: (context) => const NewNoteView(),
       },
       debugShowCheckedModeBanner: false,
     );
@@ -36,13 +38,7 @@ class HomePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return
-        // Scaffold(
-        //   appBar: AppBar(
-        //     title: const Text("Home"),
-        //   ),
-        //   body:
-        FutureBuilder(
+    return FutureBuilder(
       future: AuthService.firebase().initialize(),
       builder: (context, snapshot) {
         switch (snapshot.connectionState) {
@@ -61,7 +57,6 @@ class HomePage extends StatelessWidget {
             return const CircularProgressIndicator();
         }
       },
-      // ),
     );
   }
 }
