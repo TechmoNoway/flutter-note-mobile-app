@@ -22,20 +22,27 @@ class NotesService {
       },
     );
   }
-
   factory NotesService() => _shared;
 
   late final StreamController<List<DatabaseNote>> _notesStreamController;
 
-  Stream<List<DatabaseNote>> get allNotes =>
-      _notesStreamController.stream.filter((note) {
-        final currentUser = _user;
-        if (currentUser != null) {
-          return note.userId == currentUser.id;
-        } else {
-          throw UserShouldBeSetBeforeReadingAllNotes();
-        }
-      });
+  Stream<List<DatabaseNote>> get allNotes {
+    _cacheNotes();
+    return _notesStreamController.stream.filter((note) {
+      final currentUser = _user;
+      if (currentUser != null) {
+        return note.userId == currentUser.id;
+      } else {
+        throw UserShouldBeSetBeforeReadingAllNotes();
+      }
+    });
+  }
+
+  Future<void> clearData() async {
+    _notes.clear();
+    _user = null;
+    _notesStreamController.sink.add(_notes);
+  }
 
   Future<DatabaseUser> getOrCreateUser({
     required String email,
@@ -258,21 +265,22 @@ class NotesService {
 
   Future<void> open() async {
     if (_db != null) {
-      throw DatabaseAlreadyOpenException();
+      // throw DatabaseAlreadyOpenException();
+    } else {
+      try {
+        final docsPath = await getApplicationDocumentsDirectory();
+        final dbPath = join(docsPath.path, dbName);
+        final db = await openDatabase(dbPath);
+        _db = db;
+        // create the user table
+        db.execute(createUserTable);
+        // create the note table
+        db.execute(createNoteTable);
+        await _cacheNotes();
+      } on MissingPlatformDirectoryException {
+        throw UnableToGetDocumentsDirectory();
+      } catch (e) {}
     }
-    try {
-      final docsPath = await getApplicationDocumentsDirectory();
-      final dbPath = join(docsPath.path, dbName);
-      final db = await openDatabase(dbPath);
-      _db = db;
-      // create the user table
-      db.execute(createUserTable);
-      // create the note table
-      db.execute(createNoteTable);
-      await _cacheNotes();
-    } on MissingPlatformDirectoryException {
-      throw UnableToGetDocumentsDirectory();
-    } catch (e) {}
   }
 }
 
