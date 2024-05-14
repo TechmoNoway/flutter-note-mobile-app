@@ -76,6 +76,8 @@ class _CreateUpdateNoteViewState extends State<CreateUpdateNoteView> {
         documentId: note.documentId,
         text: text,
       );
+    } else {
+      print("bug is here");
     }
   }
 
