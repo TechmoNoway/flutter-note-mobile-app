@@ -9,7 +9,7 @@ class FirebaseCloudStorage {
   Future<void> deleteNote({required String documentId}) async {
     try {
       await notes.doc(documentId).delete();
-    } catch (_) {
+    } catch (e) {
       throw CouldNotDeleteNoteException();
     }
   }
