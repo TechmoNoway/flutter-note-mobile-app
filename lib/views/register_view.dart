@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:note_flutter/services/auth/auth_exceptions.dart';
-import 'package:note_flutter/services/auth/auth_service.dart';
 import 'package:note_flutter/services/auth/bloc/auth_bloc.dart';
 import 'package:note_flutter/services/auth/bloc/auth_event.dart';
 import 'package:note_flutter/services/auth/bloc/auth_state.dart';
@@ -52,30 +51,31 @@ class _RegisterViewState extends State<RegisterView> {
         appBar: AppBar(
           title: const Text('Register'),
         ),
-        body: FutureBuilder(
-          future: AuthService.firebase().initialize(),
-          builder: (context, snapshot) {
-            switch (snapshot.connectionState) {
-              case ConnectionState.done:
-                return Column(
+        body: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const Text('Enter your email and password to see your notes!'),
+              TextField(
+                controller: _email,
+                autofocus: true,
+                keyboardType: TextInputType.emailAddress,
+                decoration:
+                    const InputDecoration(hintText: 'Enter your email here'),
+              ),
+              TextField(
+                controller: _password,
+                decoration: const InputDecoration(
+                  hintText: "Enter your password here",
+                ),
+                obscureText: true,
+                enableSuggestions: false,
+                autocorrect: false,
+              ),
+              Center(
+                child: Column(
                   children: [
-                    TextField(
-                      controller: _email,
-                      // enableSuggestions: false,
-                      // autocorrect: false,
-                      keyboardType: TextInputType.emailAddress,
-                      decoration: const InputDecoration(
-                          hintText: 'Enter your email here'),
-                    ),
-                    TextField(
-                      controller: _password,
-                      decoration: const InputDecoration(
-                        hintText: "Enter your password here",
-                      ),
-                      obscureText: true,
-                      enableSuggestions: false,
-                      autocorrect: false,
-                    ),
                     TextButton(
                       onPressed: () async {
                         final email = _email.text;
@@ -90,16 +90,16 @@ class _RegisterViewState extends State<RegisterView> {
                       child: const Text('Register'),
                     ),
                     TextButton(
-                        onPressed: () {
-                          context.read<AuthBloc>().add(const AuthEventLogOut());
-                        },
-                        child: const Text("Already registered? Login here!"))
+                      onPressed: () {
+                        context.read<AuthBloc>().add(const AuthEventLogOut());
+                      },
+                      child: const Text("Already registered? Login here!"),
+                    ),
                   ],
-                );
-              default:
-                return const Text("Loading...");
-            }
-          },
+                ),
+              )
+            ],
+          ),
         ),
       ),
     );
