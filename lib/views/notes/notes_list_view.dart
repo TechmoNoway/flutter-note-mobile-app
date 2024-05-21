@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:note_flutter/services/cloud/cloud_note.dart';
-import 'package:note_flutter/views/notes/delete_dialog.dart';
+import 'package:note_flutter/utils/dialogs/delete_dialog.dart';
 
 typedef NoteCallback = void Function(CloudNote note);
 

@@ -12,6 +12,7 @@ import 'package:note_flutter/views/notes/create_update_note_view.dart';
 import 'package:note_flutter/views/notes/notes_view.dart';
 import 'package:note_flutter/views/register_view.dart';
 import 'package:note_flutter/views/verify_email_view.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
@@ -24,6 +25,8 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      supportedLocales: AppLocalizations.supportedLocales,
+      localizationsDelegates: AppLocalizations.localizationsDelegates,
       title: 'Notes Flutter',
       theme: ThemeData(primarySwatch: Colors.blue),
       home: BlocProvider<AuthBloc>(

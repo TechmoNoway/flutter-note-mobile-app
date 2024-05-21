@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:note_flutter/extentions/buildcontext/loc.dart';
 import 'package:note_flutter/services/auth/auth_exceptions.dart';
 import 'package:note_flutter/services/auth/bloc/auth_bloc.dart';
 import 'package:note_flutter/services/auth/bloc/auth_event.dart';
@@ -50,7 +51,7 @@ class _LoginViewState extends State<LoginView> {
       },
       child: Scaffold(
         appBar: AppBar(
-          title: const Text('Login'),
+          title: Text(context.loc.my_title),
         ),
         body: Padding(
           padding: const EdgeInsets.all(16.0),
